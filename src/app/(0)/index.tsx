@@ -14,8 +14,8 @@ export default function Dev() {
           <Link url={"/(auth)"} title="Sign In/Sign Up" />
           <Link url={"/(auth)/confirm"} title="Confirm Email" />
         </Section>
-        <Section title="Todo Screens">
-          <Link url={"/(tabs)"} title="Home" />
+        <Section title="Main Screens">
+          <Link url={"/(tabs)"} title="Main" />
         </Section>
       </View>
     </SafeAreaView>
