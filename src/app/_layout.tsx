@@ -36,6 +36,11 @@ const usePlatformSpecificSetup = Platform.select({
   default: noop,
 });
 
+export const unstable_settings = {
+  // Ensure any route can link back to `/`
+  initialRouteName: "(0)",
+};
+
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
@@ -43,7 +48,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Slot />
+      <Stack screenOptions={{ headerShown: true }} />
       <PortalHost />
     </ThemeProvider>
   );
