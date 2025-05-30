@@ -1,4 +1,4 @@
-import "~/global.css";
+import "@/global.css";
 
 import {
   DarkTheme,
@@ -11,10 +11,10 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
-import { ThemeToggle } from "~/components/ThemeToggle";
-import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import { NAV_THEME } from "@/lib/constants";
+import { useColorScheme } from "@/lib/useColorScheme";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
