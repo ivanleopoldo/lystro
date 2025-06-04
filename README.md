@@ -8,3 +8,4 @@ An open-source collaborative list application with offline-first capabilities bu
 - [ ] Create Components for list, list items
 - [ ] Add dynamic profile tab
 - [ ] Make FontAwesome5 Icons have default className "text-foreground"
+- [ ] Update Not_Found Page and Add to Dev

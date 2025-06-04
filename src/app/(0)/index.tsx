@@ -1,10 +1,10 @@
-import { SafeAreaView, View } from "react-native";
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { Lead } from "@/components/ui/typography";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { RelativePathString, router } from "expo-router";
+import { router } from "expo-router";
 import { PropsWithChildren } from "react";
+import { SafeAreaView, View } from "react-native";
 
 export default function Dev() {
   return (
@@ -12,10 +12,16 @@ export default function Dev() {
       <View className="flex-1 p-6 gap-8">
         <Section title="Authentication Screens">
           <Link url={"/(auth)"} title="Sign In/Sign Up" />
-          <Link url={"/(auth)/confirm"} title="Confirm Email" />
+          <Link url={"/confirm"} title="Confirm Email" />
         </Section>
         <Section title="Main Screens">
-          <Link url={"/(tabs)"} title="Main" />
+          <Link url={"/lists"} title="Main" />
+          <Link url={"/lists/1"} title="Lists" />
+          <Link url={"/lists/1/item/2"} title="Items" />
+        </Section>
+        <Section title="Misc">
+          <Link url={"/_sitemap"} title="Sitemap" />
+          <Link url={"/+not-found"} title="Not Found" />
         </Section>
       </View>
     </SafeAreaView>
