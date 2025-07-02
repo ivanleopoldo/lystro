@@ -16,6 +16,7 @@ export default function Home() {
         contentContainerClassName="p-4"
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => {
+          const hasCollaborators = item.collaborators.length > 0;
           return (
             <Pressable
               onPress={() => handlePressList(item.id)}
