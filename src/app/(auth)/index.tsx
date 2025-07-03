@@ -4,11 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Muted } from "@/components/ui/typography";
 import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
+import { useSignIn } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
 export default function AuthScreen() {
   const [isSignIn, setIsSignIn] = useState(true);
+  const {
+    isLoaded: isSignInLoaded,
+    signIn,
+    setActive: setSignInActive,
+  } = useSignIn();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,11 +24,35 @@ export default function AuthScreen() {
   const handleAppleSignIn = () => {};
   const handleGoogleSignIn = () => {};
 
-  // TODO: implement email password auth signin
-  const handleSignIn = () => {};
+  const handleSignIn = async () => {
+    if (!isSignInLoaded) return;
+
+    // Start the sign-in process using the email and password provided
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      // If sign-in process is complete, set the created session as active
+      // and redirect the user
+      if (signInAttempt.status === "complete") {
+        await setSignInActive({ session: signInAttempt.createdSessionId });
+        router.replace("/lists");
+      } else {
+        // If the status isn't complete, check why. User might need to
+        // complete further steps.
+        console.error(JSON.stringify(signInAttempt, null, 2));
+      }
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
 
   // TODO: implement email password auth signup
-  const handleSignUp = () => {};
+  const handleSignUp = async () => {};
 
   return (
     <SafeAreaView className="relative flex-1">
