@@ -13,10 +13,14 @@ export default function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // TODO: use clerk for apple and google signin
   const handleAppleSignIn = () => {};
   const handleGoogleSignIn = () => {};
 
+  // TODO: implement email password auth signin
   const handleSignIn = () => {};
+
+  // TODO: implement email password auth signup
   const handleSignUp = () => {};
 
   return (

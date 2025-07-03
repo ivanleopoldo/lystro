@@ -3,6 +3,7 @@ import { useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { Item } from "@/lib/schema";
 
+// TODO: Use InstantDB
 export default function ListItem() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const data: Item[] = [];
@@ -14,6 +15,7 @@ export default function ListItem() {
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => {
           return (
+            // TODO: make swipeable
             <Pressable
               key={item.id}
               className="flex-1 bg-neutral-100 rounded-lg px-4 py-4"

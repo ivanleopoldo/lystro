@@ -1,5 +1,10 @@
 import "@/global.css";
 
+import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import { NAV_THEME } from "@/lib/constants";
+import { useColorScheme } from "@/lib/useColorScheme";
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,14 +12,10 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { Slot, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
-import { NAV_THEME } from "@/lib/constants";
-import { useColorScheme } from "@/lib/useColorScheme";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -47,9 +48,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: true }} />
-      <PortalHost />
+      <ClerkProvider tokenCache={tokenCache}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+        <Stack screenOptions={{ headerShown: true }} />
+        <PortalHost />
+      </ClerkProvider>
     </ThemeProvider>
   );
 }

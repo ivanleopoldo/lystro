@@ -9,7 +9,9 @@ export default function Home() {
     router.push(`/lists/${id}`);
   };
 
-  const { isLoading, error, data } = db.useQuery({ lists: {} });
+  const { isLoading, error, data } = db.useQuery({
+    lists: { collaborators: {} },
+  });
 
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -21,8 +23,6 @@ export default function Home() {
 
   const lists = data?.lists;
 
-  const hasCollaborators: boolean = true;
-
   return (
     <SafeAreaView>
       <FlatList
@@ -32,6 +32,7 @@ export default function Home() {
         renderItem={({ item }) => {
           const hasCollaborators = item.collaborators.length > 0;
           return (
+            // TODO: make swipeable
             <Pressable
               onPress={() => handlePressList(item.id)}
               className="bg-neutral-100 items-center justify-between rounded-lg pl-2 pr-4 py-2 flex-row gap-4"

@@ -1,6 +1,9 @@
 import { Button } from "@/components/general/button";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView, View } from "react-native";
+import { OTPInput } from "input-otp-native";
+import { cn } from "@/lib/utils";
+import { H1, Muted } from "@/components/ui/typography";
 
 export default function ConfirmEmail() {
   const email = "john@doe.com";
@@ -19,21 +22,44 @@ export default function ConfirmEmail() {
 
   return (
     <SafeAreaView className="relative flex-1 justify-center">
-      <View className="flex-1 justify-center items-center p-6 gap-4">
-        <Text className="text-2xl font-bold">Confirm your email address</Text>
+      <View className="flex-1 px-6 pt-20 pb-6 gap-12">
+        <View className="gap-2 items-center">
+          <H1 className="font-bold">OTP Verification</H1>
+          <Muted className="text-md text-center">
+            We have sent the One-time Password (OTP) code to{" "}
+            {hidePartsOfEmail(email)}
+          </Muted>
+        </View>
         <View className="justify-center items-center w-full gap-2">
-          <Text className="text-lg">We sent a confirmation email to:</Text>
-          <View className="w-2/3 text-lg items-center justify-center font-bold bg-neutral-100 py-2 px-4 rounded-lg">
-            <Text className="text-lg font-semibold">
-              {hidePartsOfEmail(email)}
-            </Text>
-          </View>
-          <Text className="text-lg">Press on confirm to continue</Text>
+          <OTPInput
+            maxLength={6}
+            keyboardType="number-pad"
+            autoFocus
+            render={({ slots }) => {
+              return (
+                <View className="flex-row gap-2">
+                  {slots.map((slot, idx) => {
+                    return (
+                      <View
+                        className={cn(
+                          slot.isActive && "border border-primary/30",
+                          "w-[50px] h-[50px] bg-neutral-100 rounded-xl items-center justify-center",
+                        )}
+                        key={idx}
+                      >
+                        <Text>{slot.char}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              );
+            }}
+          />
         </View>
       </View>
-      <View className="items-center">
-        <Button variant={"secondary"}>
-          <Text>Resend Email</Text>
+      <View className="px-6 pb-6 gap-2">
+        <Button>
+          <Text>Confirm</Text>
         </Button>
       </View>
     </SafeAreaView>
