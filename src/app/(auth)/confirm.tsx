@@ -4,6 +4,8 @@ import { SafeAreaView, View } from "react-native";
 import { OTPInput } from "input-otp-native";
 import { cn } from "@/lib/utils";
 import { H1, Muted } from "@/components/ui/typography";
+import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
+import { router } from "expo-router";
 
 export default function ConfirmEmail() {
   const email = "john@doe.com";
@@ -22,6 +24,15 @@ export default function ConfirmEmail() {
 
   return (
     <SafeAreaView className="relative flex-1 justify-center">
+      <View className="pl-3 pt-3">
+        <Button onPress={() => router.back()} variant={"ghost"} size={"icon"}>
+          <FontAwesome5
+            name="chevron-left"
+            size={16}
+            className="text-primary"
+          />
+        </Button>
+      </View>
       <View className="flex-1 px-6 pt-20 pb-6 gap-12">
         <View className="gap-2 items-center">
           <H1 className="font-bold">OTP Verification</H1>
