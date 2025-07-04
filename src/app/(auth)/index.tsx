@@ -4,15 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Muted } from "@/components/ui/typography";
 import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
-import { useSignIn, useSignUp } from "@clerk/clerk-expo";
+import { useSignUpStore } from "@/lib/stores/signup-store";
+import { useSignIn } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
+// TODO: Add visual error
 export default function AuthScreen() {
   const [isSignIn, setIsSignIn] = useState(true);
   const { isLoaded, signIn, setActive } = useSignIn();
-  const { isLoaded: isSignUpLoaded, signUp } = useSignUp();
+  const storeEmail = useSignUpStore((state) => state.storeEmail);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +22,9 @@ export default function AuthScreen() {
   // TODO: use clerk for apple and google signin
   const handleAppleSignIn = () => {};
   const handleGoogleSignIn = () => {};
+
+  // TODO: implement validation logic
+  const validate = () => {};
 
   const handleSignIn = async () => {
     if (!isLoaded) return;
@@ -41,23 +46,9 @@ export default function AuthScreen() {
     }
   };
 
-  const handleSignUp = async () => {
-    console.log("loading");
-    if (!isSignUpLoaded) return;
-    console.log("signing up");
-
-    try {
-      await signUp.create({
-        emailAddress: email,
-        password,
-      });
-
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
-      router.push("/confirm");
-    } catch (error) {
-      console.error("Sign up error:", error);
-    }
+  const handleSignUp = () => {
+    storeEmail(email);
+    router.push("/customize-profile");
   };
 
   return (
@@ -120,11 +111,14 @@ export default function AuthScreen() {
               placeholder="john@doe.com"
               onChangeText={(text) => setEmail(text)}
             />
-            <Input
-              secureTextEntry
-              placeholder="Password"
-              onChangeText={(text) => setPassword(text)}
-            />
+            {/* TODO: add hide/unhide toggle for password */}
+            {isSignIn && (
+              <Input
+                secureTextEntry
+                placeholder="Password"
+                onChangeText={(text) => setPassword(text)}
+              />
+            )}
             <Button
               onPress={() => {
                 if (isSignIn) {
@@ -137,7 +131,7 @@ export default function AuthScreen() {
                 setPassword("");
               }}
             >
-              <Text>{isSignIn ? "Sign In" : "Create an account"}</Text>
+              <Text>{isSignIn ? "Sign In" : "Continue"}</Text>
             </Button>
           </View>
         </View>

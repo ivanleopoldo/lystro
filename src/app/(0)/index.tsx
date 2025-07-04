@@ -13,6 +13,7 @@ export default function Dev() {
         <Section title="Authentication Screens">
           <Link url={"/(auth)"} title="Sign In/Sign Up" />
           <Link url={"/confirm"} title="Confirm Email" />
+          <Link url={"/customize-profile"} title="Customize Profile" />
         </Section>
         <Section title="Main Screens">
           <Link url={"/lists"} title="Main" />
