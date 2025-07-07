@@ -14,6 +14,7 @@ export default function Dev() {
           <Link url={"/(auth)"} title="Sign In/Sign Up" />
           <Link url={"/confirm"} title="Confirm Email" />
           <Link url={"/customize-profile"} title="Customize Profile" />
+          <Link url={"/finished"} title="Finished" />
         </Section>
         <Section title="Main Screens">
           <Link url={"/lists"} title="Main" />

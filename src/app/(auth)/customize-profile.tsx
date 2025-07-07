@@ -98,7 +98,7 @@ export default function CustomizeProfile() {
               />
             </View>
             <Muted className="text-center text-sm">
-              These will be used as your login credentials so write them down or
+              These can be used as your login credentials so write them down or
               remember them well!
             </Muted>
           </View>

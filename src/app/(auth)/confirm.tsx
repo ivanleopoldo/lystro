@@ -1,21 +1,19 @@
 import { Button } from "@/components/general/button";
 import { Text } from "@/components/ui/text";
-import { SafeAreaView, View } from "react-native";
-import { OTPInput } from "input-otp-native";
-import { cn } from "@/lib/utils";
 import { H1, Muted } from "@/components/ui/typography";
 import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
+import { useSignUpStore } from "@/lib/stores/signup-store";
+import { cn } from "@/lib/utils";
 import { useSignUp, useUser } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import { useState } from "react";
-import { useSignUpStore } from "@/lib/stores/signup-store";
+import { OTPInput } from "input-otp-native";
+import { useEffect, useState } from "react";
+import { SafeAreaView, View } from "react-native";
 
 export default function ConfirmEmail() {
   const [code, setCode] = useState("");
   const { isLoaded, setActive, signUp } = useSignUp();
   const email = useSignUpStore((state) => state.email);
-  const profileImage = useSignUpStore((state) => state.profileImage);
-  const { user } = useUser();
 
   const hidePartsOfEmail = (str: string) => {
     const strArr = str.split("@");
@@ -39,10 +37,8 @@ export default function ConfirmEmail() {
 
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
-        // FIX: profile image not updating in clerk
-        if (user) {
-          await user.setProfileImage({ file: profileImage });
-        }
+
+        router.push("/finished");
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
@@ -51,6 +47,7 @@ export default function ConfirmEmail() {
     }
   };
 
+  // TODO: auto continue if OTP code is completely filled
   return (
     <SafeAreaView className="relative flex-1 justify-center">
       <View className="pl-3 pt-3">
