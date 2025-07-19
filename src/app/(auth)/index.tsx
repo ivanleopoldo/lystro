@@ -1,43 +1,44 @@
 import * as Linking from "expo-linking";
-import { SafeAreaView, ActivityIndicator, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import { Button } from "@/components/general/button";
 import Logo from "@/components/general/logo";
 import { Text } from "@/components/ui/text";
 import { H1, Muted } from "@/components/ui/typography";
 import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
-import { useSSO } from "@clerk/clerk-expo";
-import { useState } from "react";
+import { useClerk, useSSO } from "@clerk/clerk-expo";
+import { useCallback, useState } from "react";
+import { OAuthStrategy } from "@/lib/types";
 
 export default function AuthScreen() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { startSSOFlow } = useSSO();
+  const { setActive } = useClerk();
 
-  // TODO: add error handling and loading state
-  const handleGoogle = async () => {
+  // TODO: add error handling
+  const handleSSO = useCallback(async (strategy: OAuthStrategy) => {
     try {
-      const { createdSessionId, signUp, setActive } = await startSSOFlow({
-        strategy: "oauth_google",
+      const { createdSessionId, signUp } = await startSSOFlow({
+        strategy,
         redirectUrl: Linking.createURL("/lists", {
           scheme: "com.ivanleopoldo.lystro",
         }),
       });
 
-      setIsSigningIn(true);
-      if (createdSessionId && setActive) {
+      if (createdSessionId) {
+        setIsSigningIn(true);
         await setActive({ session: createdSessionId });
       } else if (signUp) {
         await signUp.create({
           emailAddress: signUp.emailAddress!,
-          username: "oten",
         });
       }
     } catch (err) {
-      console.error("Google SSO error", err);
+      console.error(`${strategy} SSO error`, err);
     } finally {
       setIsSigningIn(false);
     }
-  };
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -61,6 +62,7 @@ export default function AuthScreen() {
           <View className="justify-center gap-4">
             <View className="gap-2">
               <Button
+                onPress={() => handleSSO("oauth_apple")}
                 icon={
                   <FontAwesome5
                     name="apple"
@@ -68,12 +70,12 @@ export default function AuthScreen() {
                     size={20}
                   />
                 }
-                onPress={() => {}}
                 variant="secondary"
               >
                 <Text>Continue with Apple</Text>
               </Button>
               <Button
+                onPress={() => handleSSO("oauth_google")}
                 icon={
                   <FontAwesome5
                     name="google"
@@ -81,7 +83,6 @@ export default function AuthScreen() {
                     size={16}
                   />
                 }
-                onPress={handleGoogle}
                 variant="secondary"
               >
                 <Text>Continue with Google</Text>
