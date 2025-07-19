@@ -12,9 +12,6 @@ export default function Dev() {
       <View className="flex-1 p-6 gap-8">
         <Section title="Authentication Screens">
           <Link url={"/(auth)"} title="Sign In/Sign Up" />
-          <Link url={"/confirm"} title="Confirm Email" />
-          <Link url={"/customize-profile"} title="Customize Profile" />
-          <Link url={"/finished"} title="Finished" />
         </Section>
         <Section title="Main Screens">
           <Link url={"/lists"} title="Main" />
