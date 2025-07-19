@@ -1,8 +1,9 @@
 import { useSignIn, useSignUp } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -21,6 +22,22 @@ export default function AuthScreen() {
   const [isSignIn, setIsSignIn] = useState(true);
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isLoaded: isSignUpLoaded, signUp } = useSignUp();
+
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardVisible(true),
+    );
+    const hideSub = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardVisible(false),
+    );
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   // TODO: make it better
   const email = useAuthStore((state) => state.email);
@@ -68,6 +85,7 @@ export default function AuthScreen() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
       >
         <ScrollView
+          scrollEnabled={keyboardVisible}
           contentContainerClassName="grow p-12 justify-center"
           keyboardShouldPersistTaps="handled"
         >
