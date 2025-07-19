@@ -9,13 +9,13 @@ import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
 import { useClerk, useSSO } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react";
 import { OAuthStrategy } from "@/lib/types";
+import { toast } from "sonner-native";
 
 export default function AuthScreen() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { startSSOFlow } = useSSO();
   const { setActive } = useClerk();
 
-  // TODO: add error handling
   const handleSSO = useCallback(async (strategy: OAuthStrategy) => {
     try {
       const { createdSessionId, signUp } = await startSSOFlow({
@@ -34,7 +34,9 @@ export default function AuthScreen() {
         });
       }
     } catch (err) {
-      console.error(`${strategy} SSO error`, err);
+      toast.error("Oh no!", {
+        description: "Something went wrong while signing in. Please try again!",
+      });
     } finally {
       setIsSigningIn(false);
     }

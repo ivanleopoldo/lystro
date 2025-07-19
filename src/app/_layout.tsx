@@ -16,6 +16,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toaster } from "@/components/Toaster";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -46,20 +48,28 @@ export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
 
+  const THEME = isDarkColorScheme ? DARK_THEME : LIGHT_THEME;
+
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <ClerkProvider
-        tokenCache={tokenCache}
-        publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
-      >
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(0)" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-        <PortalHost />
-      </ClerkProvider>
+    <ThemeProvider value={THEME}>
+      <GestureHandlerRootView>
+        <ClerkProvider
+          tokenCache={tokenCache}
+          publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        >
+          <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(0)" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+          <Toaster
+            theme={isDarkColorScheme ? "dark" : "light"}
+            toastClassName="bg-background text-foreground border border-border justify-start items-start"
+          />
+          <PortalHost />
+        </ClerkProvider>
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }
