@@ -9,7 +9,9 @@ import {
 import {
   FadingView,
   Header,
+  HeaderProps,
   LargeHeader,
+  LargeHeaderProps,
   ScalingView,
   ScrollHeaderProps,
   ScrollLargeHeaderProps,
@@ -34,21 +36,19 @@ function HeaderSurface({ showNavBar }: SurfaceComponentProps) {
 
 function HeaderComponent({
   title = "Title",
-  headerLeft,
-  headerRight,
   showNavBar,
+  ...props
 }: {
   title?: string;
-  headerLeft?: React.ReactNode;
-  headerRight?: React.ReactNode;
-} & ScrollHeaderProps) {
+  headerCenterFadesIn?: boolean;
+} & ScrollHeaderProps &
+  HeaderProps) {
   const { top } = useSafeAreaInsets();
   const theme = useTheme();
 
   return (
     <Header
-      headerLeft={headerLeft}
-      headerRight={headerRight}
+      {...props}
       borderColor={theme.colors.border}
       borderWidth={0.2}
       showNavBar={showNavBar}
@@ -65,9 +65,10 @@ function HeaderComponent({
 function LargeHeaderComponent({
   title = "Title",
   scrollY,
-}: { title?: string } & ScrollLargeHeaderProps) {
+  ...props
+}: { title?: string } & ScrollLargeHeaderProps & LargeHeaderProps) {
   return (
-    <LargeHeader>
+    <LargeHeader {...props}>
       <ScalingView scrollY={scrollY}>
         <Text className="text-5xl font-bold">{title}</Text>
       </ScalingView>
@@ -82,6 +83,9 @@ export default function ScrollView({
   contentContainerClassName,
   children,
   header = true,
+  largeHeader = true,
+  headerProps,
+  largeHeaderProps,
   ...props
 }: {
   title?: string;
@@ -89,6 +93,9 @@ export default function ScrollView({
   containerClassName?: string;
   contentContainerClassName?: string;
   header?: boolean;
+  largeHeader?: boolean;
+  headerProps?: Omit<HeaderProps, "showNavBar" | "scrollY">;
+  largeHeaderProps?: Omit<LargeHeaderProps, "showNavBar" | "scrollY">;
 } & PropsWithChildren &
   BaseScrollViewProps) {
   const { bottom } = useSafeAreaInsets();
@@ -102,11 +109,22 @@ export default function ScrollView({
         <ScrollViewWithHeaders
           {...props}
           HeaderComponent={(props) => (
-            <HeaderComponent title={title} {...props} />
+            <HeaderComponent
+              title={title}
+              headerCenterFadesIn={largeHeader}
+              {...headerProps}
+              {...props}
+            />
           )}
-          LargeHeaderComponent={(props) => (
-            <LargeHeaderComponent title={title} {...props} />
-          )}
+          {...(largeHeader && {
+            LargeHeaderComponent: (props) => (
+              <LargeHeaderComponent
+                title={title}
+                {...largeHeaderProps}
+                {...props}
+              />
+            ),
+          })}
           absoluteHeader
           className={cn(baseClassName, "-z-100", className)}
           contentContainerClassName={cn(
