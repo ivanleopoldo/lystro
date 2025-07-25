@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+import ScrollView from "@/components/general/scrollview";
 import { Text } from "@/components/ui/text";
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import { router } from "expo-router";
-import { View, SafeAreaView, Linking } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 export default function Settings() {
   const { signOut } = useClerk();
@@ -19,15 +18,17 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Settings</Text>
-        <Text>username: {user.fullName}</Text>
-        <Text>email: {user.primaryEmailAddress?.emailAddress}</Text>
-        <Button onPress={handleSignOut}>
-          <Text>Sign Out</Text>
-        </Button>
-      </View>
-    </SafeAreaView>
+    <ScrollView containerClassName="gap-4" contentContainerClassName="gap-8">
+      {[1, 2, 3, 4, 5].map((i) => {
+        return (
+          <View
+            key={i}
+            className="bg-background h-45 aspect-square border border-border"
+          >
+            <Text></Text>
+          </View>
+        );
+      })}
+    </ScrollView>
   );
 }
