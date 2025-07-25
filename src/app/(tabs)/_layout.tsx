@@ -1,9 +1,6 @@
-import { router, Tabs } from "expo-router";
-import { StyleSheet } from "react-native";
-import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
-import { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-expo";
-import { BlurView } from "expo-blur";
+import { router, Stack } from "expo-router";
+import { useEffect } from "react";
 
 export default function TabsLayout() {
   const { isSignedIn } = useAuth();
@@ -15,49 +12,15 @@ export default function TabsLayout() {
   }, [isSignedIn]);
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarBackground: () => (
-          <BlurView
-            tint="systemThickMaterial"
-            style={{
-              ...StyleSheet.absoluteFillObject,
-              backgroundColor: "transparent",
-            }}
-          />
-        ),
-      }}
-    >
-      <Tabs.Screen
-        name="lists/index"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" size={22} color={color} />
-          ),
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: false,
         }}
-      />
-      <Tabs.Screen
-        name="settings/index"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="cog" size={22} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="lists/[id]"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="lists/[id]/item/[itemId]"
-        options={{
-          href: null,
-        }}
-      />
-    </Tabs>
+      >
+        <Stack.Screen name="lists/index" />
+        <Stack.Screen name="settings/index" />
+      </Stack>
+    </>
   );
 }
