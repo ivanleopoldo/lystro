@@ -1,7 +1,9 @@
 import { router, Tabs } from "expo-router";
+import { StyleSheet } from "react-native";
 import { FontAwesome5 } from "@/lib/icons/FontAwesome5";
 import { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-expo";
+import { BlurView } from "expo-blur";
 
 export default function TabsLayout() {
   const { isSignedIn } = useAuth();
@@ -13,7 +15,21 @@ export default function TabsLayout() {
   }, [isSignedIn]);
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarBackground: () => (
+          <BlurView
+            tint="systemThickMaterial"
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: "transparent",
+            }}
+          />
+        ),
+      }}
+    >
       <Tabs.Screen
         name="lists/index"
         options={{
