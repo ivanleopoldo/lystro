@@ -3,6 +3,7 @@ import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
 import { Muted } from "@/components/ui/typography";
 import db from "@/lib/db";
+import { Button } from "@/components/general/button";
 
 export default function Home() {
   const handlePressList = (id: string) => {
@@ -25,6 +26,10 @@ export default function Home() {
 
   return (
     <SafeAreaView>
+      <Button onPress={() => router.push("/settings")}>
+        <Text className="font-bold">Go Settings</Text>
+      </Button>
+      {/* TODO: make flatlist with header */}
       <FlatList
         data={lists}
         contentContainerClassName="p-4"
