@@ -1,11 +1,14 @@
 import React from "react";
-import { View, Pressable, ViewProps } from "react-native";
-import { Link as ExpoLink } from "expo-router";
+import { View, Pressable, ViewProps, Share } from "react-native";
+import { Link as ExpoLink, Href, LinkProps } from "expo-router";
 import { Text as ReusablesText } from "../ui/text";
 import { Muted } from "../ui/typography";
 import { Button as ReusablesButton } from "./button";
 import { cn } from "@/lib/utils";
 import { Entypo } from "@/lib/icons/Entypo";
+import { Lucide } from "@/lib/icons/Lucide";
+import { icons } from "lucide-react-native";
+import * as WebBrowser from "expo-web-browser";
 
 type ContainerProps = ViewProps & { className?: string };
 
@@ -13,6 +16,7 @@ function IndentedRow({
   children,
   containerProps,
   className,
+  pressable = false,
   onPress,
   style,
   isLast,
@@ -20,6 +24,7 @@ function IndentedRow({
   children: React.ReactNode;
   containerProps?: ContainerProps;
   className?: string;
+  pressable?: boolean;
   style?: any;
   onPress?: () => void;
   isLast?: boolean;
@@ -32,7 +37,7 @@ function IndentedRow({
           "px-5 py-3 flex-row justify-between items-center",
           containerProps?.className,
           className,
-          "active:bg-muted-foreground/10",
+          pressable && "active:bg-muted-foreground/10",
         )}
         style={style}
         {...containerProps}
@@ -103,31 +108,70 @@ function Text({
 }
 
 function Link({
-  href,
   children,
   containerProps,
   className,
+  iconType,
   isLast,
+  target,
+  ...props
 }: {
-  href: any;
   children: React.ReactNode;
   containerProps?: ContainerProps;
+  iconType?: "globe" | "share" | "default" | "external" | undefined;
   className?: string;
+  target?: LinkProps["target"] | "share";
   isLast?: boolean;
-}) {
+} & Omit<LinkProps, "target">) {
+  const iconMap: Record<string, keyof typeof icons> = {
+    default: "ChevronRight",
+    share: "Share",
+    external: "Globe",
+    _blank: "ExternalLink",
+  };
+
+  const isExternal = /^([\w\d_+.-]+:)?\/\//.test(
+    ExpoLink.resolveHref(props.href),
+  );
+
+  const resolveIcon =
+    target === undefined && isExternal ? "external" : undefined;
+  const iconName = iconMap[target ?? resolveIcon ?? "default"];
+
+  const openInAppBrowser = (href: Href) => {
+    WebBrowser.openBrowserAsync(href as string, {
+      presentationStyle: WebBrowser.WebBrowserPresentationStyle.AUTOMATIC,
+    });
+  };
+
   return (
-    <ExpoLink href={href} asChild>
+    <ExpoLink
+      {...props}
+      href={props.href}
+      onPress={(e) => {
+        if (target === undefined && isExternal) {
+          e.preventDefault();
+
+          openInAppBrowser(props.href);
+        } else if (target === "share" && isExternal) {
+          e.preventDefault();
+          Share.share({
+            url: props.href as string,
+          });
+        } else {
+          props.onPress?.(e);
+        }
+      }}
+      asChild
+    >
       <IndentedRow
         containerProps={containerProps}
         className={className}
+        pressable
         isLast={isLast}
       >
         <ReusablesText className="text-lg">{children}</ReusablesText>
-        <Entypo
-          name="chevron-right"
-          size={16}
-          className="text-muted-foreground"
-        />
+        <Lucide name={iconName} size={16} className="text-muted-foreground" />
       </IndentedRow>
     </ExpoLink>
   );
