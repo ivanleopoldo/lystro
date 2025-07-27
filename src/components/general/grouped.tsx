@@ -1,21 +1,23 @@
-import React from "react";
-import { View, Pressable, ViewProps, Share } from "react-native";
+import React, { PropsWithChildren } from "react";
+import { View, Pressable, ViewProps, Share, Switch } from "react-native";
 import { Link as ExpoLink, Href, LinkProps } from "expo-router";
 import { Text as ReusablesText } from "../ui/text";
 import { Muted } from "../ui/typography";
 import { Button as ReusablesButton } from "./button";
 import { cn } from "@/lib/utils";
-import { Entypo } from "@/lib/icons/Entypo";
 import { Lucide } from "@/lib/icons/Lucide";
 import { icons } from "lucide-react-native";
 import * as WebBrowser from "expo-web-browser";
+import { useTheme } from "@react-navigation/native";
 
 type ContainerProps = ViewProps & { className?: string };
+
+// TODO: generalize props into one
+// TODO: allow support for left icon
 
 function IndentedRow({
   children,
   containerProps,
-  className,
   pressable = false,
   onPress,
   style,
@@ -36,7 +38,6 @@ function IndentedRow({
         className={cn(
           "px-5 py-3 flex-row justify-between items-center",
           containerProps?.className,
-          className,
           pressable && "active:bg-muted-foreground/10",
         )}
         style={style}
@@ -99,10 +100,10 @@ function Text({
       onPress={onPress}
       isLast={isLast}
     >
-      <ReusablesText className="text-lg">{children}</ReusablesText>
-      {hint && (
-        <Muted className="text-muted-foreground font-medium">{hint}</Muted>
-      )}
+      <ReusablesText className={cn("text-lg", className)}>
+        {children}
+      </ReusablesText>
+      {hint && <Muted className="text-muted-foreground text-lg ">{hint}</Muted>}
     </IndentedRow>
   );
 }
@@ -164,16 +165,29 @@ function Link({
       }}
       asChild
     >
-      <IndentedRow
-        containerProps={containerProps}
-        className={className}
-        pressable
-        isLast={isLast}
-      >
-        <ReusablesText className="text-lg">{children}</ReusablesText>
+      <IndentedRow containerProps={containerProps} pressable isLast={isLast}>
+        <ReusablesText className={cn("text-lg", className)}>
+          {children}
+        </ReusablesText>
         <Lucide name={iconName} size={16} className="text-muted-foreground" />
       </IndentedRow>
     </ExpoLink>
+  );
+}
+
+function Card({
+  children,
+  onPress,
+  containerProps,
+}: {
+  className?: string;
+  containerProps?: ContainerProps;
+  onPress?: () => void;
+} & PropsWithChildren) {
+  return (
+    <IndentedRow onPress={onPress} pressable {...containerProps} isLast={true}>
+      {children}
+    </IndentedRow>
   );
 }
 
@@ -188,14 +202,24 @@ function Toggle({
   className?: string;
   isLast?: boolean;
 }) {
+  const theme = useTheme();
+  const [isEnabled, setIsEnabled] = React.useState(false);
+
   return (
     <IndentedRow
+      onPress={() => setIsEnabled((prev) => !prev)}
       containerProps={containerProps}
-      className={className}
+      pressable
       isLast={isLast}
     >
-      <ReusablesText className="text-lg">{children}</ReusablesText>
-      <Muted>Toggle</Muted>
+      <ReusablesText className={cn("text-lg", className)}>
+        {children}
+      </ReusablesText>
+      <Switch
+        pointerEvents="none"
+        value={isEnabled}
+        className="scale-[0.85] self-center h-full mb-[6px]"
+      />
     </IndentedRow>
   );
 }
@@ -231,4 +255,5 @@ export const Grouped = {
   Link,
   Toggle,
   Button,
+  Card,
 };
