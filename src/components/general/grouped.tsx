@@ -5,6 +5,7 @@ import { Text as ReusablesText } from "../ui/text";
 import { Muted } from "../ui/typography";
 import { Button as ReusablesButton } from "./button";
 import { cn } from "@/lib/utils";
+import { Entypo } from "@/lib/icons/Entypo";
 
 type ContainerProps = ViewProps & { className?: string };
 
@@ -94,7 +95,9 @@ function Text({
       isLast={isLast}
     >
       <ReusablesText className="text-lg">{children}</ReusablesText>
-      {hint != null && <Muted className="text-muted-foreground">{hint}</Muted>}
+      {hint && (
+        <Muted className="text-muted-foreground font-medium">{hint}</Muted>
+      )}
     </IndentedRow>
   );
 }
@@ -120,7 +123,11 @@ function Link({
         isLast={isLast}
       >
         <ReusablesText className="text-lg">{children}</ReusablesText>
-        <ReusablesText className="text-muted-foreground">›</ReusablesText>
+        <Entypo
+          name="chevron-right"
+          size={16}
+          className="text-muted-foreground"
+        />
       </IndentedRow>
     </ExpoLink>
   );
