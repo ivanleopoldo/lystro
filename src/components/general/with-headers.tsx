@@ -17,6 +17,7 @@ import {
   ScrollLargeHeaderProps,
   ScrollViewWithHeaders,
   SurfaceComponentProps,
+  SectionListWithHeaders,
 } from "@codeherence/react-native-header";
 import { Text } from "../ui/text";
 
@@ -76,7 +77,7 @@ function LargeHeaderComponent({
   );
 }
 
-export default function ScrollView({
+export function ScrollView({
   title = "Title",
   className,
   containerClassName,

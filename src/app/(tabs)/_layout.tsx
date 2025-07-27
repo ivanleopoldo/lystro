@@ -19,7 +19,9 @@ export default function TabsLayout() {
         }}
       >
         <Stack.Screen name="lists/index" />
-        <Stack.Screen name="settings/index" />
+        <Stack.Screen name="lists/[id]" />
+        <Stack.Screen name="lists/[id]/item/[itemId]" />
+        <Stack.Screen name="settings" />
       </Stack>
     </>
   );

@@ -1,8 +1,9 @@
 import { Button } from "@/components/general/button";
-import ScrollView from "@/components/general/scrollview";
+import { ScrollView } from "@/components/general/with-headers";
 import { Text } from "@/components/ui/text";
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Entypo } from "@/lib/icons/Entypo";
+import { Grouped } from "@/components/general/grouped";
 
 // TODO: add big user information card
 // TODO: add settings for toggle for notifications
@@ -33,7 +34,6 @@ export default function Settings() {
       title="Settings"
       showsVerticalScrollIndicator={false}
       containerClassName="gap-4"
-      largeHeader={false}
       contentContainerClassName="gap-8"
     >
       {/* FIX: on pressed button text goes white instead of keeping red */}
@@ -48,6 +48,12 @@ export default function Settings() {
           Sign Out
         </Text>
       </Button>
+      <Grouped.Section title="Account">
+        <Grouped.Text>Account</Grouped.Text>
+        <Grouped.Text>Account</Grouped.Text>
+        <Grouped.Text hint="v1.2.3">Account</Grouped.Text>
+        <Grouped.Link href="_">Account</Grouped.Link>
+      </Grouped.Section>
     </ScrollView>
   );
 }
