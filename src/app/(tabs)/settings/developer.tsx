@@ -1,8 +1,13 @@
+import { Grouped } from "@/components/general/grouped";
 import { View } from "react-native";
+import { ScrollView } from "@/components/general/with-headers";
 
 // TODO: add button to stop syncing
-// TODO: add logs
 
 export default function Developer() {
-  return <View />;
+  return (
+    <ScrollView title="Developer" largeHeader={false}>
+      <Grouped.Section title="Developer"></Grouped.Section>
+    </ScrollView>
+  );
 }

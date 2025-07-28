@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { Muted } from "@/components/ui/typography";
 import db from "@/lib/db";
 import { Button } from "@/components/general/button";
+import Animated from "react-native-reanimated";
 
 export default function Home() {
   const handlePressList = (id: string) => {

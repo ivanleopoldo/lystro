@@ -1,69 +1,76 @@
-import React, { PropsWithChildren } from "react";
-import { View, Pressable, ViewProps, Share, Switch } from "react-native";
+import { Lucide } from "@/lib/icons/Lucide";
+import { cn } from "@/lib/utils";
 import { Link as ExpoLink, Href, LinkProps } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import { icons } from "lucide-react-native";
+import React from "react";
+import {
+  Pressable,
+  PressableProps,
+  Share,
+  View,
+  Switch,
+  ViewProps,
+} from "react-native";
 import { Text as ReusablesText } from "../ui/text";
 import { Muted } from "../ui/typography";
-import { Button as ReusablesButton } from "./button";
-import { cn } from "@/lib/utils";
-import { Lucide } from "@/lib/icons/Lucide";
-import { icons } from "lucide-react-native";
-import * as WebBrowser from "expo-web-browser";
-import { useTheme } from "@react-navigation/native";
 
-type ContainerProps = ViewProps & { className?: string };
-
-// TODO: generalize props into one
 // TODO: allow support for left icon
+// TODO: allow support for custom right icon
 
-function IndentedRow({
-  children,
-  containerProps,
-  pressable = false,
-  onPress,
-  style,
-  isLast,
-}: {
-  children: React.ReactNode;
-  containerProps?: ContainerProps;
+type RowProps = {
+  children?: React.ReactNode;
+  containerProps?: PressableProps;
+  containerClassName?: string;
   className?: string;
   pressable?: boolean;
-  style?: any;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   onPress?: () => void;
   isLast?: boolean;
-}) {
+};
+
+function IndentedRow({ ...props }: RowProps) {
   return (
-    <View>
+    <>
       <Pressable
-        onPress={onPress}
+        onPress={props.onPress}
         className={cn(
-          "px-5 py-3 flex-row justify-between items-center",
-          containerProps?.className,
-          pressable && "active:bg-muted-foreground/10",
+          props.containerClassName,
+          "px-5 flex-row items-center gap-2",
+          props.pressable && "active:bg-muted-foreground/10",
         )}
-        style={style}
-        {...containerProps}
+        {...props.containerProps}
       >
-        {children}
+        <View className="flex-row items-center w-full py-3 gap-3">
+          {props.leftIcon && (
+            <View className="w-6 items-center justify-center">
+              {props.leftIcon}
+            </View>
+          )}
+          <View className="flex-1 flex-row justify-between items-center">
+            {props.children}
+          </View>
+        </View>
       </Pressable>
-      {!isLast && (
+      {!props.isLast && (
         <View className="ml-5 border-b-[1px] border-muted-foreground/10" />
       )}
-    </View>
+    </>
   );
 }
 
 function Section({
   title,
   footer,
-  children,
   ...props
-}: { title?: string; footer?: string } & ViewProps & React.PropsWithChildren) {
-  const count = React.Children.count(children);
+}: { title?: string; footer?: string } & ViewProps) {
+  const count = React.Children.count(props.children);
   return (
     <View {...props} className="gap-2">
       {title && <Muted className="ml-5 uppercase">{title}</Muted>}
       <View className="bg-muted rounded-lg overflow-hidden">
-        {React.Children.map(children, (child, index) => {
+        {React.Children.map(props.children, (child, index) => {
           if (!React.isValidElement(child)) return child;
           const el = child as React.ReactElement<any>;
           return React.cloneElement(el, {
@@ -78,52 +85,28 @@ function Section({
   );
 }
 
-function Text({
-  children,
-  hint,
-  containerProps,
-  className,
-  isLast,
-  onPress,
-}: {
-  children: React.ReactNode;
-  hint?: string;
-  containerProps?: ContainerProps;
-  className?: string;
-  isLast?: boolean;
-  onPress?: () => void;
-}) {
+function Text({ hint, ...props }: { hint?: string } & RowProps) {
   return (
-    <IndentedRow
-      containerProps={containerProps}
-      className={className}
-      onPress={onPress}
-      isLast={isLast}
-    >
-      <ReusablesText className={cn("text-lg", className)}>
-        {children}
+    <IndentedRow {...props}>
+      <ReusablesText className={cn("text-lg", props.className)}>
+        {props.children}
       </ReusablesText>
       {hint && <Muted className="text-muted-foreground text-lg ">{hint}</Muted>}
     </IndentedRow>
   );
 }
 
+// TODO: add deeplink support
+
 function Link({
-  children,
-  containerProps,
-  className,
   iconType,
-  isLast,
   target,
   ...props
 }: {
-  children: React.ReactNode;
-  containerProps?: ContainerProps;
   iconType?: "globe" | "share" | "default" | "external" | undefined;
-  className?: string;
   target?: LinkProps["target"] | "share";
-  isLast?: boolean;
-} & Omit<LinkProps, "target">) {
+} & Omit<LinkProps, "target"> &
+  RowProps) {
   const iconMap: Record<string, keyof typeof icons> = {
     default: "ChevronRight",
     share: "Share",
@@ -152,7 +135,6 @@ function Link({
       onPress={(e) => {
         if (target === undefined && isExternal) {
           e.preventDefault();
-
           openInAppBrowser(props.href);
         } else if (target === "share" && isExternal) {
           e.preventDefault();
@@ -165,9 +147,9 @@ function Link({
       }}
       asChild
     >
-      <IndentedRow containerProps={containerProps} pressable isLast={isLast}>
-        <ReusablesText className={cn("text-lg", className)}>
-          {children}
+      <IndentedRow leftIcon={props.leftIcon} pressable>
+        <ReusablesText className={cn("text-lg", props.className)}>
+          {props.children}
         </ReusablesText>
         <Lucide name={iconName} size={16} className="text-muted-foreground" />
       </IndentedRow>
@@ -175,76 +157,21 @@ function Link({
   );
 }
 
-function Card({
-  children,
-  onPress,
-  containerProps,
-}: {
-  className?: string;
-  containerProps?: ContainerProps;
-  onPress?: () => void;
-} & PropsWithChildren) {
+function Card({ ...props }: RowProps) {
   return (
-    <IndentedRow onPress={onPress} pressable {...containerProps} isLast={true}>
-      {children}
+    <IndentedRow {...props} pressable>
+      {props.children}
     </IndentedRow>
   );
 }
 
-function Toggle({
-  children,
-  containerProps,
-  className,
-  isLast,
-}: {
-  children: React.ReactNode;
-  containerProps?: ContainerProps;
-  className?: string;
-  isLast?: boolean;
-}) {
-  const theme = useTheme();
-  const [isEnabled, setIsEnabled] = React.useState(false);
-
+function Toggle({ value, ...props }: { value?: boolean } & RowProps) {
   return (
-    <IndentedRow
-      onPress={() => setIsEnabled((prev) => !prev)}
-      containerProps={containerProps}
-      pressable
-      isLast={isLast}
-    >
-      <ReusablesText className={cn("text-lg", className)}>
-        {children}
+    <IndentedRow {...props} pressable>
+      <ReusablesText className={cn("text-lg", props.className)}>
+        {props.children}
       </ReusablesText>
-      <Switch
-        pointerEvents="none"
-        value={isEnabled}
-        className="scale-[0.85] self-center h-full mb-[6px]"
-      />
-    </IndentedRow>
-  );
-}
-
-function Button({
-  children,
-  onPress,
-  containerProps,
-  className,
-  isLast,
-}: {
-  children: React.ReactNode;
-  onPress?: () => void;
-  containerProps?: ContainerProps;
-  className?: string;
-  isLast?: boolean;
-}) {
-  return (
-    <IndentedRow
-      containerProps={containerProps}
-      className={className}
-      onPress={onPress}
-      isLast={isLast}
-    >
-      <ReusablesButton>{children}</ReusablesButton>
+      <Switch value={value} pointerEvents="none" />
     </IndentedRow>
   );
 }
@@ -254,6 +181,5 @@ export const Grouped = {
   Text,
   Link,
   Toggle,
-  Button,
   Card,
 };

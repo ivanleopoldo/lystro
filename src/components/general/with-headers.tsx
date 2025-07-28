@@ -1,8 +1,8 @@
 import {
-  ScrollViewProps as BaseScrollViewProps,
   ScrollView as BaseScrollView,
-  StyleSheet,
+  ScrollViewProps as BaseScrollViewProps,
   SafeAreaView,
+  StyleSheet,
   View,
 } from "react-native";
 
@@ -17,15 +17,14 @@ import {
   ScrollLargeHeaderProps,
   ScrollViewWithHeaders,
   SurfaceComponentProps,
-  SectionListWithHeaders,
 } from "@codeherence/react-native-header";
 import { Text } from "../ui/text";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { cn } from "@/lib/utils";
+import { useTheme } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { PropsWithChildren } from "react";
-import { useTheme } from "@react-navigation/native";
-import { cn } from "@/lib/utils";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function HeaderSurface({ showNavBar }: SurfaceComponentProps) {
   return (
@@ -71,7 +70,7 @@ function LargeHeaderComponent({
   return (
     <LargeHeader {...props}>
       <ScalingView scrollY={scrollY}>
-        <Text className="text-5xl font-bold">{title}</Text>
+        <Text className="text-5xl text-foreground font-bold">{title}</Text>
       </ScalingView>
     </LargeHeader>
   );
